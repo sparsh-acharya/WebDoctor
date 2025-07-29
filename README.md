@@ -6,7 +6,32 @@ The **WebDoctor** is a comprehensive web-based healthcare management platform de
 
 The EHR system facilitates seamless communication between patients and doctors, enabling efficient appointment scheduling, medical record management, prescription tracking, and real-time video consultations. Built with modern web technologies, it ensures data security, regulatory compliance, and enhanced healthcare delivery.
 
-## 🚀 Key Features
+## 💻 Programming Languages
+
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+
+## 🛠️ Tech Stack
+
+**Backend:**
+![Django](https://img.shields.io/badge/Django-5.1-092E20?style=for-the-badge&logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Celery](https://img.shields.io/badge/Celery-37B24D?style=for-the-badge&logo=celery&logoColor=white)
+
+**Frontend & Integration:**
+![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![100ms](https://img.shields.io/badge/100ms-Video_API-FF6B6B?style=for-the-badge&logo=webrtc&logoColor=white)
+![Gmail](https://img.shields.io/badge/Gmail-SMTP-D14836?style=for-the-badge&logo=gmail&logoColor=white)
+
+**Development Tools:**
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+
+## �🚀 Key Features
 
 ### Patient Management
 - **Patient Registration & Profiles**: Comprehensive patient onboarding with detailed medical history
