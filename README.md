@@ -1,8 +1,8 @@
-# Electronic Health Records (EHR) System
+# WebDoctor (EHR) System
 
 ## 📋 Project Overview
 
-The **Electronic Health Records (EHR) System** is a comprehensive web-based healthcare management platform designed to streamline patient care, medical record management, and telemedicine services. This system bridges the gap between patients and healthcare providers through a secure, scalable, and user-friendly digital platform.
+The **WebDoctor** is a comprehensive web-based healthcare management platform designed to streamline patient care, medical record management, and telemedicine services. This system bridges the gap between patients and healthcare providers through a secure, scalable, and user-friendly digital platform.
 
 The EHR system facilitates seamless communication between patients and doctors, enabling efficient appointment scheduling, medical record management, prescription tracking, and real-time video consultations. Built with modern web technologies, it ensures data security, regulatory compliance, and enhanced healthcare delivery.
 
