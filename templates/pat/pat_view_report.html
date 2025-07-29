@@ -1,0 +1,169 @@
+{% extends "pat_base.html" %}
+
+{% block content %}
+<main class="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'PAT_REPORTS' %}" class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center hover:bg-gray-200 transition-all duration-200 shadow-sm">
+                    <div class="w-5 h-5 flex items-center justify-center text-gray-600">
+                        <i class="ri-arrow-left-line"></i>
+                    </div>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">{{ report.title }}</h1>
+                    <p class="text-gray-500 text-sm mt-1">Medical Report</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-3">
+                {% if report.uploaded_by == request.user %}
+                <a href="{% url 'PAT_EDIT_REPORT' report.id %}" class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center hover:bg-amber-200 transition-all duration-200 shadow-sm hover:shadow-md group relative" title="Edit Report">
+                    <div class="w-5 h-5 flex items-center justify-center text-amber-700">
+                        <i class="ri-edit-line"></i>
+                    </div>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg">
+                        Edit Report
+                    </div>
+                </a>
+                <a href="{% url 'PAT_DELETE_REPORT' report.id %}" class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center hover:bg-red-200 transition-all duration-200 shadow-sm hover:shadow-md group relative" title="Delete Report">
+                    <div class="w-5 h-5 flex items-center justify-center text-red-700">
+                        <i class="ri-delete-bin-line"></i>
+                    </div>
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-lg">
+                        Delete Report
+                    </div>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <!-- Main Content -->
+        <div class="xl:col-span-3 space-y-6">
+            <!-- Report Information Card -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                <div class="flex items-center mb-8">
+                    <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                        <div class="w-5 h-5 flex items-center justify-center text-blue-600">
+                            <i class="ri-information-line"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900">Report Information</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Report Type</label>
+                            <p class="text-base font-medium text-gray-900">{{ report.get_report_type_display }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Test Date</label>
+                            <p class="text-base font-medium text-gray-900">{{ report.report_date|date:"F d, Y" }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Uploaded</label>
+                            <p class="text-base font-medium text-gray-900">{{ report.uploaded_date|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Uploaded By</label>
+                            <div class="flex items-center">
+                                {% if report.uploaded_by %}
+                                <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden mr-4 shadow-sm">
+                                    <img src="https://readdy.ai/api/search-image?query=professional%20headshot%20of%20a%20{{ report.uploaded_by.first_name|lower }}%20person%2C%20healthcare%20consumer%2C%20medical%20patient%2C%20confident%20smile%2C%20studio%20lighting&width=200&height=200&seq={{ report.uploaded_by.id }}&orientation=squarish"
+                                         alt="{{ report.uploaded_by.first_name }}" class="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <p class="text-base font-semibold text-gray-900">{{ report.uploaded_by.first_name }} {{ report.uploaded_by.last_name }}</p>
+                                    <p class="text-sm text-gray-500">{{ report.uploaded_by.email }}</p>
+                                </div>
+                                {% else %}
+                                <div class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden mr-4 shadow-sm">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="w-5 h-5 flex items-center justify-center text-gray-400">
+                                            <i class="ri-user-line"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-base font-semibold text-gray-900">Unknown User</p>
+                                    <p class="text-sm text-gray-500">No email available</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if report.lab_facility %}
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Laboratory</label>
+                            <p class="text-base font-medium text-gray-900">{{ report.lab_facility }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Card -->
+            {% if report.description %}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                        <div class="w-5 h-5 flex items-center justify-center text-green-600">
+                            <i class="ri-file-text-line"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900">Description</h2>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <p class="text-gray-700 text-base leading-relaxed">{{ report.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="xl:col-span-1">
+            <!-- File Information Card -->
+            {% if report.file %}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-6">
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
+                        <div class="w-5 h-5 flex items-center justify-center text-orange-600">
+                            <i class="ri-attachment-2"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">File</h3>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-5 mb-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-gray-200 shadow-sm">
+                            <div class="w-6 h-6 flex items-center justify-center text-gray-600">
+                                <i class="ri-file-line"></i>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ report.file.name|slice:"15:" }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ report.file_size_mb }}MB • {{ report.file_extension }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'PAT_DOWNLOAD_REPORT' report.id %}" class="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <div class="w-4 h-4 flex items-center justify-center mr-2">
+                        <i class="ri-download-line"></i>
+                    </div>
+                    Download File
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

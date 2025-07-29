@@ -1,0 +1,306 @@
+{% extends "pat_base.html" %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Dashboard Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Patient Dashboard</h1>
+        <p class="text-gray-600">
+            Welcome back, {{request.user.first_name}}. Here's your health overview.
+        </p>
+    </div>
+    <!-- Health Metrics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">
+                    Heart Rate
+                </h3>
+                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-heart-pulse-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{request.user.PAT.heart_rate|default:"--"}} bpm</p>
+            <p class="text-sm text-gray-500 mt-1">
+
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Respiratory Rate</h3>
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-wind-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{request.user.PAT.respiratory_rate|default:"--"}} bpm
+            </p>
+            <p class="text-sm text-gray-500 mt-1">
+
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Temperature</h3>
+                <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-temp-hot-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{request.user.PAT.body_temperature|default:"--"}}°C</p>
+            <p class="text-sm text-gray-500 mt-1">
+
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Weight</h3>
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-scales-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{request.user.PAT.weight|default:"--"}} kg</p>
+            <p class="text-sm text-gray-500 mt-1">
+
+            </p>
+        </div>
+    </div>
+    <!-- Main Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Column: Health Overview -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Upcoming Appointments -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">
+                            Upcoming Appointments
+                        </h2>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-400 hover:text-primary transition-colors">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-refresh-line"></i>
+                                </div>
+                            </button>
+                            <button class="text-gray-400 hover:text-primary transition-colors">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-more-2-fill"></i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">Your scheduled visits</p>
+                </div>
+                <div class="divide-y divide-gray-100">
+                    <div class="p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-gray-900">Dr. Sarah Mitchell</h3>
+                                    <span class="text-sm text-gray-500">Tomorrow, 10:00 AM</span>
+                                </div>
+                                <p class="text-sm text-gray-500">Annual Checkup</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-2 h-10 bg-green-500 rounded-full mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-gray-900">Dr. Michael Chen</h3>
+                                    <span class="text-sm text-gray-500">June 20, 2:30 PM</span>
+                                </div>
+                                <p class="text-sm text-gray-500">Dental Cleaning</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-2 h-10 bg-purple-500 rounded-full mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-gray-900">Dr. Emily Johnson</h3>
+                                    <span class="text-sm text-gray-500">June 25, 11:15 AM</span>
+                                </div>
+                                <p class="text-sm text-gray-500">Eye Exam</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-gray-100">
+                    <a href="#" class="text-primary text-sm font-medium flex items-center justify-center">
+                        Schedule new appointment
+                        <div class="w-4 h-4 flex items-center justify-center ml-1">
+                            <i class="ri-arrow-right-line"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- Medical History -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Medical Information
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Your health details</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Patient ID:</span>
+                        <span class="text-sm font-medium text-gray-900">{{request.user.PAT.uid}}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Blood Type:</span>
+                        <span class="text-sm font-medium text-gray-900">{{request.user.PAT.blood_type|default:"Not specified"}}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Height:</span>
+                        <span class="text-sm font-medium text-gray-900">{{request.user.PAT.height|default:"Not specified"}} cm</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Emergency Contact:</span>
+                        <span
+                            class="text-sm font-medium text-gray-900">{{request.user.PAT.emergency_contact_number}}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Respiratory Rate:</span>
+                        <span
+                            class="text-sm font-medium text-gray-900">{{request.user.PAT.respiratory_rate|default:"--"}}
+                            bpm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right Column: Quick Actions & Health Trends -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Quick Actions
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <button
+                            class="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <div
+                                class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-primary mb-3">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-calendar-add-line"></i>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Book Appointment</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                            <div
+                                class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-500 mb-3">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-message-2-line"></i>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Message Doctor</span>
+                        </button>
+                        <a href="{% url 'PAT_REPORTS' %}"
+                            class="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                            <div
+                                class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mb-3">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-file-list-line"></i>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">My Reports</span>
+                        </a>
+                        <a href="{% url 'PAT_MEDS' %}"
+                            class="flex flex-col items-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+                            <div
+                                class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mb-3">
+                                <div class="w-6 h-6 flex items-center justify-center">
+                                    <i class="ri-medicine-bottle-line"></i>
+                                </div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Prescriptions</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Chronic Conditions -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Chronic Conditions
+                    </h2>
+                </div>
+                <div class="p-6">
+                    {% if request.user.pat.chronic_conditions %}
+                    <div class="space-y-4">
+                        {% if request.user.pat.chronic_conditions.conditions %}
+                        {% for condition in request.user.pat.chronic_conditions.conditions %}
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div class="flex items-start justify-between mb-3">
+                                <h3 class="text-lg font-semibold text-gray-900">
+
+                                    {{condition.name|title}}
+
+
+                                </h3>
+                                <span class="px-3 py-1 text-xs font-medium rounded-full
+                    {% if condition.severity == 'mild' or condition.severity_level == 'mild' %}bg-green-100 text-green-800
+                    {% elif condition.severity == 'moderate' or condition.severity_level == 'moderate' %}bg-yellow-100 text-yellow-800
+                    {% elif condition.severity == 'severe' or condition.severity_level == 'severe' %}bg-red-100 text-red-800
+                    {% elif condition.status == 'active' or condition.status == 'critical' %}bg-red-100 text-red-800
+                    {% elif condition.status == 'stable' %}bg-yellow-100 text-yellow-800
+                    {% elif condition.status == 'controlled' %}bg-green-100 text-green-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {% if condition.severity %}
+                                    {{condition.severity|title}}
+                                    {% else %}
+                                    Active
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <div class="w-4 h-4 flex items-center justify-center mr-2">
+                                        <i class="ri-calendar-line"></i>
+                                    </div>
+                                    <span>Diagnosed:
+
+                                        {{condition.diagnosis_date}}
+
+                                    </span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                            <div class="w-8 h-8 flex items-center justify-center text-gray-400">
+                                <i class="ri-heart-line"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500">No chronic conditions recorded</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+{% endblock %}

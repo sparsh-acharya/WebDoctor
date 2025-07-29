@@ -1,0 +1,306 @@
+{% extends 'pat_base.html' %}
+{% load tz %}
+{% block content %}
+<!-- Main Content -->
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">My Appointments</h1>
+        <p class="text-gray-600">View all your scheduled, completed, and cancelled appointments.</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div id="msg-display" class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 border border-green-200 text-green-800{% elif message.tags == 'error' %}bg-red-100 border border-red-200 text-red-800{% else %}bg-blue-100 border border-blue-200 text-blue-800{% endif %}">
+            <div class="flex items-center">
+                <i class="{% if message.tags == 'success' %}ri-check-line text-green-600{% elif message.tags == 'error' %}ri-error-warning-line text-red-600{% else %}ri-information-line text-blue-600{% endif %} mr-2"></i>
+                <span>{{ message }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Appointment Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Scheduled</h3>
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <i class="ri-calendar-line text-blue-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{ scheduled.count }}</p>
+            <p class="text-sm text-gray-500 mt-1">Upcoming appointments</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Completed</h3>
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <i class="ri-check-line text-green-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{ completed.count }}</p>
+            <p class="text-sm text-gray-500 mt-1">Finished appointments</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Cancelled</h3>
+                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                    <i class="ri-close-line text-red-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">{{ cancelled.count }}</p>
+            <p class="text-sm text-gray-500 mt-1">Cancelled appointments</p>
+        </div>
+    </div>
+
+    <!-- Scheduled Appointments -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100">
+            <button onclick="toggleSection('scheduled')" class="w-full flex items-center justify-between text-left">
+                <h2 class="text-lg font-semibold text-gray-900">Scheduled Appointments</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">{{ scheduled.count }} appointment{{ scheduled.count|pluralize }}</span>
+                    <i id="scheduled-icon" class="ri-arrow-down-s-line text-gray-400 text-xl transition-transform duration-200"></i>
+                </div>
+            </button>
+        </div>
+        <div id="scheduled-content" class="p-6 border-t-0">
+            {% if scheduled %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for appt in scheduled %}
+                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
+                    <!-- Header with Icon and Doctor Name -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-4 shadow-md">
+                                <i class="ri-user-line text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 text-lg">Dr. {{ appt.doctor.user.get_full_name }}</h3>
+                                <p class="text-sm text-gray-500">Doctor ID: {{ appt.doctor.id }}</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full border border-blue-200">
+                            {{ appt.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Appointment Details -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="ri-time-line text-gray-400 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ appt.date_time|date:"F j, Y" }}</p>
+                                <p class="text-sm text-gray-500">{{ appt.date_time|date:"g:i A" }}</p>
+                            </div>
+                        </div>
+                        {% if appt.hms_room_desc %}
+                        <div class="flex items-start">
+                            <i class="ri-building-line text-gray-400 mr-3 mt-0.5"></i>
+                            <p class="text-sm text-gray-700">{{ appt.hms_room_desc }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Meeting Link -->
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            {% if appt.is_active %}
+                            <a href="{{ appt.pat_meeting_link }}" target="_blank"
+                               class="inline-flex items-center px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors shadow-sm">
+                                <i class="ri-video-line mr-2"></i>
+                                Join Meeting
+                            </a>
+                            {% else %}
+                            <span class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-500 text-sm font-medium rounded-lg">
+                                <i class="ri-video-off-line mr-2"></i>
+                                Meeting not started
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-calendar-line text-gray-400 text-2xl"></i>
+                </div>
+                <p class="text-lg font-medium text-gray-900 mb-2">No scheduled appointments</p>
+                <p class="text-sm text-gray-600">You don't have any upcoming appointments scheduled.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Completed Appointments -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100">
+            <button onclick="toggleSection('completed')" class="w-full flex items-center justify-between text-left">
+                <h2 class="text-lg font-semibold text-gray-900">Completed Appointments</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">{{ completed.count }} appointment{{ completed.count|pluralize }}</span>
+                    <i id="completed-icon" class="ri-arrow-down-s-line text-gray-400 text-xl transition-transform duration-200"></i>
+                </div>
+            </button>
+        </div>
+        <div id="completed-content" class="p-6 border-t-0">
+            {% if completed %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for appt in completed %}
+                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-green-300">
+                    <!-- Header with Icon and Doctor Name -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center mr-4 shadow-md">
+                                <i class="ri-user-line text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 text-lg">Dr. {{ appt.doctor.user.get_full_name }}</h3>
+                                <p class="text-sm text-gray-500">Doctor ID: {{ appt.doctor.id }}</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full border border-green-200">
+                            {{ appt.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Appointment Details -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="ri-time-line text-gray-400 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ appt.date_time|date:"F j, Y" }}</p>
+                                <p class="text-sm text-gray-500">{{ appt.date_time|date:"g:i A" }}</p>
+                            </div>
+                        </div>
+                        {% if appt.hms_room_desc %}
+                        <div class="flex items-start">
+                            <i class="ri-building-line text-gray-400 mr-3 mt-0.5"></i>
+                            <p class="text-sm text-gray-700">{{ appt.hms_room_desc }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-check-line text-gray-400 text-2xl"></i>
+                </div>
+                <p class="text-lg font-medium text-gray-900 mb-2">No completed appointments</p>
+                <p class="text-sm text-gray-600">Completed appointments will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Cancelled Appointments -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="p-6 border-b border-gray-100">
+            <button onclick="toggleSection('cancelled')" class="w-full flex items-center justify-between text-left">
+                <h2 class="text-lg font-semibold text-gray-900">Cancelled Appointments</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">{{ cancelled.count }} appointment{{ cancelled.count|pluralize }}</span>
+                    <i id="cancelled-icon" class="ri-arrow-down-s-line text-gray-400 text-xl transition-transform duration-200"></i>
+                </div>
+            </button>
+        </div>
+        <div id="cancelled-content" class="p-6 border-t-0">
+            {% if cancelled %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for appt in cancelled %}
+                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-red-300">
+                    <!-- Header with Icon and Doctor Name -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center mr-4 shadow-md">
+                                <i class="ri-user-line text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 text-lg">Dr. {{ appt.doctor.user.get_full_name }}</h3>
+                                <p class="text-sm text-gray-500">Doctor ID: {{ appt.doctor.id }}</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full border border-red-200">
+                            {{ appt.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Appointment Details -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center">
+                            <i class="ri-time-line text-gray-400 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ appt.date_time|date:"F j, Y" }}</p>
+                                <p class="text-sm text-gray-500">{{ appt.date_time|date:"g:i A" }}</p>
+                            </div>
+                        </div>
+                        {% if appt.hms_room_desc %}
+                        <div class="flex items-start">
+                            <i class="ri-building-line text-gray-400 mr-3 mt-0.5"></i>
+                            <p class="text-sm text-gray-700">{{ appt.hms_room_desc }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-close-line text-gray-400 text-2xl"></i>
+                </div>
+                <p class="text-lg font-medium text-gray-900 mb-2">No cancelled appointments</p>
+                <p class="text-sm text-gray-600">Cancelled appointments will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block js_addon%}
+<script>
+function toggleSection(sectionName) {
+    const content = document.getElementById(sectionName + '-content');
+    const icon = document.getElementById(sectionName + '-icon');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.style.transform = 'rotate(0deg)';
+        icon.className = 'ri-arrow-down-s-line text-gray-400 text-xl transition-transform duration-200';
+    } else {
+        content.style.display = 'none';
+        icon.style.transform = 'rotate(-90deg)';
+        icon.className = 'ri-arrow-right-s-line text-gray-400 text-xl transition-transform duration-200';
+    }
+}
+
+// Initialize sections - scheduled open, others closed by default
+document.addEventListener('DOMContentLoaded', function() {
+    // Close completed and cancelled sections by default
+    toggleSection('completed');
+    toggleSection('cancelled');
+
+    // Auto-hide messages after 5 seconds
+    const messages = document.querySelectorAll("#msg-display");
+    messages.forEach(function(message) {
+        setTimeout(function() {
+            message.style.transition = 'opacity 0.5s ease-out';
+            message.style.opacity = '0';
+            setTimeout(function() {
+                message.remove();
+            }, 500);
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

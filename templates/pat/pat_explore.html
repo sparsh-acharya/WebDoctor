@@ -1,0 +1,288 @@
+{% extends "pat_base.html" %}
+{% block content %}
+<!-- Main Content -->
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Explore Doctors</h1>
+        <p class="text-gray-600">Find and connect with healthcare professionals</p>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+        <form method="GET" class="flex flex-col md:flex-row gap-4">
+            <!-- Search Input -->
+            <div class="flex-1">
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search Doctors</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ri-search-line text-gray-400"></i>
+                    </div>
+                    <input type="text" id="search" name="search" value="{{ search_query }}"
+                        placeholder="Search by name or specialization..."
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary">
+                </div>
+            </div>
+
+            <!-- Specialization Filter -->
+            <div class="md:w-64">
+                <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">Specialization</label>
+                <select id="specialization" name="specialization"
+                    class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                    <option value="">All Specializations</option>
+                    {% for value, label in specialization_choices %}
+                    <option value="{{ value }}" {% if value == current_specialization %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Search Button -->
+            <div class="flex items-end">
+                <button type="submit"
+                    class="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Count -->
+    <div class="mb-4">
+        <p class="text-sm text-gray-600">
+            Found <span class="font-medium text-gray-900">{{ doctors.count }}</span> doctor{{ doctors.count|pluralize }}
+            {% if search_query or current_specialization %}
+            matching your criteria
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Doctors Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for doctor in doctors %}
+        <div
+            class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+            <!-- Doctor Header -->
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=professional%20doctor%20headshot%2C%20{{ doctor.specialization|lower }}%20specialist%2C%20confident%20smile%2C%20medical%20professional&width=200&height=200&seq=doctor{{ doctor.id }}&orientation=squarish"
+                                alt="{{ doctor.full_name }}" class="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ doctor.full_name }}</h3>
+                            <p class="text-sm text-primary font-medium">{{ doctor.get_specialization_display }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Doctor Stats -->
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-500">Experience</p>
+                        <p class="font-medium text-gray-900">{{ doctor.experience_years }} years</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500">Consultation Fee</p>
+                        <p class="font-medium text-gray-900">Rs. {{ doctor.consultation_fee }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Bio -->
+            <div class="p-6">
+                {% if doctor.bio %}
+                <p class="text-sm text-gray-600 mb-4 line-clamp-3">{{ doctor.bio }}</p>
+                {% else %}
+                <p class="text-sm text-gray-500 mb-4 italic">No bio available</p>
+                {% endif %}
+
+                <!-- Education -->
+                <div class="mb-4">
+                    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Education</p>
+                    <p class="text-sm text-gray-700">{{ doctor.education|truncatewords:15 }}</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-3">
+                    {% if doctor.connection_status == 'PENDING' %}
+                    <!-- Pending Request -->
+                    <button disabled
+                        class="flex-1 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-md cursor-not-allowed text-sm font-medium">
+                        <i class="ri-time-line mr-2"></i>
+                        Pending
+                    </button>
+                    {% elif doctor.connection_status == 'APPROVED' %}
+                    <!-- Approved - Show Message Button -->
+                    <a href="#"
+                        class="flex-1 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors text-sm font-medium text-center">
+                        <i class="ri-message-2-line mr-2"></i>
+                        Message
+                    </a>
+                    {% else %}
+                    <!-- No Request - Show Connect Button -->
+                    <button onclick="openConnectionModal('{{ doctor.id }}')"
+                        class="flex-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors text-sm font-medium">
+                        <i class="ri-user-add-line mr-2"></i>
+                        Connect
+                    </button>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full">
+            <div class="text-center py-12">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                    <i class="ri-user-search-line text-2xl text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No doctors found</h3>
+                <p class="text-gray-500">Try adjusting your search criteria or check back later.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"
+    class="fixed top-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 transform translate-x-full transition-transform duration-300 z-50 max-w-sm">
+    <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <i id="toastIcon" class="text-lg"></i>
+        </div>
+        <div class="ml-3 flex-1">
+            <p id="toastMessage" class="text-sm font-medium text-gray-900"></p>
+        </div>
+        <div class="ml-4 flex-shrink-0">
+            <button onclick="hideToast()" class="text-gray-400 hover:text-gray-600">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Connection Request Modal -->
+<div id="connectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Send Connection Request</h3>
+                <button onclick="closeConnectionModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="ri-close-line text-xl"></i>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-3">Add a personal note to your connection request:</p>
+                <textarea id="connectionNote" rows="4"
+                    placeholder="Hi, I'd like to connect with you for medical consultation..."
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary resize-none"></textarea>
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="closeConnectionModal()"
+                    class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
+                    Cancel
+                </button>
+                <button onclick="sendConnectionRequestWithNote()"
+                    class="flex-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
+                    Send Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_addon %}
+<script>
+    // Global variable to store current doctor ID
+    let currentDoctorId = null;
+
+    // Open connection modal
+    function openConnectionModal(doctorId) {
+        currentDoctorId = doctorId;
+        document.getElementById('connectionModal').classList.remove('hidden');
+        document.getElementById('connectionNote').focus();
+    }
+
+    // Close connection modal
+    function closeConnectionModal() {
+        document.getElementById('connectionModal').classList.add('hidden');
+        document.getElementById('connectionNote').value = '';
+        currentDoctorId = null;
+    }
+
+    // Send connection request with note
+    function sendConnectionRequestWithNote() {
+        const note = document.getElementById('connectionNote').value.trim();
+        const formData = new FormData();
+        formData.append('doctor_id', currentDoctorId);
+        formData.append('note', note);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "SEND_CONNECTION_REQUEST" %}', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                closeConnectionModal();
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    // Refresh the page after a short delay to update button states
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                closeConnectionModal();
+                showToast('An error occurred. Please try again.', 'error');
+            });
+    }
+
+    // Toast notification functions
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = document.getElementById('toastIcon');
+
+        toastMessage.textContent = message;
+
+        // Set icon and colors based on type
+        if (type === 'success') {
+            toastIcon.className = 'ri-check-line text-green-500';
+            toast.classList.add('border-green-200');
+        } else if (type === 'error') {
+            toastIcon.className = 'ri-error-warning-line text-red-500';
+            toast.classList.add('border-red-200');
+        } else {
+            toastIcon.className = 'ri-information-line text-blue-500';
+            toast.classList.add('border-blue-200');
+        }
+
+        // Show toast
+        toast.classList.remove('translate-x-full');
+
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            hideToast();
+        }, 5000);
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('translate-x-full');
+        toast.classList.remove('border-green-200', 'border-red-200', 'border-blue-200');
+    }
+</script>
+{% endblock %}

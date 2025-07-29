@@ -1,0 +1,1096 @@
+{% extends "doc_base.html"%}
+
+{% block content %}
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Patient Details -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-6">
+        <div class="flex flex-col sm:flex-row items-center mb-6 pb-6 border-b border-gray-200">
+            <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden mr-0 sm:mr-6 mb-4 sm:mb-0 flex-shrink-0">
+                <img src="{{ patient.profile_image_url|default:'https://via.placeholder.com/150' }}"
+                    alt="{{ patient.full_name }}" class="w-full h-full object-cover" />
+            </div>
+            <div class="text-center sm:text-left">
+                <h1 class="text-3xl font-bold text-gray-900">{{ patient.full_name }}</h1>
+                <p class="text-gray-600">{{ patient.user.email }}</p>
+                <div class="mt-2 text-sm text-gray-500">
+                    <span class="font-medium text-gray-800">{{ patient.age|default:'N/A' }}</span> years
+                    <span class="mx-2">&middot;</span>
+                    <span>{{ patient.user.gender|default:'N/A' }}</span>
+                    <span class="mx-2">&middot;</span>
+                    <span>Blood Type: <span class="font-medium text-gray-800">{{patient.blood_type|default:'N/A'}}</span></span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Vitals & Measurements</h2>
+                <button onclick="openEditVitalsModal();"
+                    class="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 10-4-4l-8 8v3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7l-1.5-1.5" />
+                    </svg>
+                    Edit Vitals
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+                <!-- Height -->
+                <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-blue-700 font-medium">Height</p>
+                        <p class="text-xl font-bold text-gray-900">{{ patient.height|default:'-' }} <span
+                                class="text-base font-normal text-gray-500">cm</span></p>
+                    </div>
+                </div>
+                <!-- Weight -->
+                <div class="bg-green-50 border border-green-100 rounded-lg p-4 flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-green-100 text-green-600 mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l-6-2m6 2l-3 9m-3-9l3-1m-3 1l-3 9" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-green-700 font-medium">Weight</p>
+                        <p class="text-xl font-bold text-gray-900">{{ patient.weight|default:'-' }} <span
+                                class="text-base font-normal text-gray-500">kg</span></p>
+                    </div>
+                </div>
+                <!-- Body Temperature -->
+                <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-orange-100 text-orange-600 mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-orange-700 font-medium">Body Temp</p>
+                        <p class="text-xl font-bold text-gray-900">{{ patient.body_temperature|default:'-' }} <span
+                                class="text-base font-normal text-gray-500">°C</span></p>
+                    </div>
+                </div>
+                <!-- Heart Rate -->
+                <div class="bg-red-50 border border-red-100 rounded-lg p-4 flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-red-100 text-red-600 mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-red-700 font-medium">Heart Rate</p>
+                        <p class="text-xl font-bold text-gray-900">{{ patient.heart_rate|default:'-' }} <span
+                                class="text-base font-normal text-gray-500">bpm</span></p>
+                    </div>
+                </div>
+                <!-- Respiratory Rate -->
+                <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-12v16" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-indigo-700 font-medium">Resp. Rate</p>
+                        <p class="text-xl font-bold text-gray-900">{{ patient.respiratory_rate|default:'-' }} <span
+                                class="text-base font-normal text-gray-500">breaths/min</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Additional Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">Phone Number</p>
+                    <p class="text-gray-900 font-medium">{{ patient.user.phone_number|default:'-' }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Chronic Conditions</p>
+                    <p class="text-gray-900 font-medium">
+                        {% if patient.chronic_conditions %}
+                        {{ patient.chronic_conditions|join:', ' }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medications -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-4">
+        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4 cursor-pointer select-none">
+            <div class="flex items-center gap-2">
+                <button type="button" id="medicationsToggleBtn" class="focus:outline-none" onclick="toggleSection('medicationsSection')">
+                    <svg id="medicationsChevron" class="w-5 h-5 transition-transform inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-900">Medications</h2>
+            </div>
+            <div class="flex-1 flex flex-wrap gap-2 items-center justify-end">
+                <form method="get" class="flex flex-wrap gap-2 items-center">
+                    <input type="text" name="med_search" value="{{ med_search }}" placeholder="Search medicine..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                    <select name="med_status" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
+                        <option value="">All Statuses</option>
+                        <option value="ACTIVE" {% if med_status == 'ACTIVE' %}selected{% endif %}>Active</option>
+                        <option value="DISCONTINUED" {% if med_status == 'DISCONTINUED' %}selected{% endif %}>Discontinued</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold">Filter</button>
+                </form>
+                <button type="button" onclick="openAddMedModal();event.stopPropagation();"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Medication
+                </button>
+            </div>
+        </div>
+        <div id="medicationsSection" class="transition-all duration-300">
+            <div class="overflow-x-auto">
+                {% if medications %}
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Medication</th>
+                            <th scope="col" class="px-6 py-3">Dosage</th>
+                            <th scope="col" class="px-6 py-3">Frequency</th>
+                            <th scope="col" class="px-6 py-3">Start Date</th>
+                            <th scope="col" class="px-6 py-3">End Date</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
+                            <th scope="col" class="px-6 py-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for med in medications %}
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ med.name }}</td>
+                            <td class="px-6 py-4">{{ med.dosage }}mg</td>
+                            <td class="px-6 py-4">{{ med.frequency }}</td>
+                            <td class="px-6 py-4">{{ med.start_date|date:"Y-m-d" }}</td>
+                            <td class="px-6 py-4">{{ med.end_date|date:"Y-m-d" }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                    {% if med.status == 'ACTIVE' %} bg-green-100 text-green-800
+                                    {% else %} bg-red-100 text-red-800 {% endif %}">
+                                    {{ med.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="openEditMedModal()"
+                                    class="text-yellow-600 hover:text-yellow-800 transition-colors open-edit-med-modal"
+                                    data-med-id="{{ med.id }}">
+                                    <div class="w-5 h-5 flex items-center justify-center">
+                                        <i class="ri-edit-line"></i>
+                                    </div>
+                                </button>
+                                <form method="post" action="{% url 'DELETE_MED' med.id %}" style="display:inline;"
+                                    class="delete-med-form">
+                                    {% csrf_token %}
+                                    <button type="button" class="text-red-500 hover:text-red-700 ml-2 open-delete-modal"
+                                        data-med-name="{{ med.name }}" title="Delete">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </div>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div
+                    class="flex flex-col items-center justify-center bg-blue-50 border border-blue-100 rounded-xl p-6 shadow-sm my-8 px-8">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-semibold text-blue-700 mb-1">No Medications Found</div>
+                    <div class="text-sm text-blue-500">This patient does not have any medications yet.</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Reports -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mt-6 mb-4">
+        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4 cursor-pointer select-none">
+            <div class="flex items-center gap-2">
+                <button type="button" id="reportsToggleBtn" class="focus:outline-none" onclick="toggleSection('reportsSection')">
+                    <svg id="reportsChevron" class="w-5 h-5 transition-transform inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Medical Reports</h2>
+                    <p class="text-sm text-gray-500 mt-1">All medical reports and test results</p>
+                </div>
+            </div>
+            <div class="flex-1 flex flex-wrap gap-2 items-center justify-end">
+                <form method="get" class="flex flex-wrap gap-2 items-center">
+                    <input type="text" name="report_search" value="{{ report_search }}" placeholder="Search report..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200" />
+                    <select name="report_type" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
+                        <option value="">All Types</option>
+                        <option value="BLOOD_TEST" {% if report_type == 'BLOOD_TEST' %}selected{% endif %}>Blood Test</option>
+                        <option value="X_RAY" {% if report_type == 'X_RAY' %}selected{% endif %}>X-Ray</option>
+                        <option value="MRI" {% if report_type == 'MRI' %}selected{% endif %}>MRI</option>
+                        <option value="CT_SCAN" {% if report_type == 'CT_SCAN' %}selected{% endif %}>CT Scan</option>
+                        <option value="ULTRASOUND" {% if report_type == 'ULTRASOUND' %}selected{% endif %}>Ultrasound</option>
+                        <option value="ECG" {% if report_type == 'ECG' %}selected{% endif %}>ECG</option>
+                        <option value="ECHO" {% if report_type == 'ECHO' %}selected{% endif %}>Echocardiogram</option>
+                        <option value="BIOPSY" {% if report_type == 'BIOPSY' %}selected{% endif %}>Biopsy</option>
+                        <option value="PATHOLOGY" {% if report_type == 'PATHOLOGY' %}selected{% endif %}>Pathology</option>
+                        <option value="OTHER" {% if report_type == 'OTHER' %}selected{% endif %}>Other</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold">Filter</button>
+                </form>
+                <button onclick="openAddReportModal();event.stopPropagation();"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add Report
+                </button>
+            </div>
+        </div>
+        <div id="reportsSection" class="transition-all duration-300">
+            <div class="overflow-x-auto">
+                {% if reports %}
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Report Title</th>
+                            <th scope="col" class="px-6 py-3">Type</th>
+                            <th scope="col" class="px-6 py-3">Date</th>
+                            <th scope="col" class="px-6 py-3">Lab/Facility</th>
+                            <th scope="col" class="px-6 py-3">Uploaded By</th>
+                            <th scope="col" class="px-6 py-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ report.title }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                    {{ report.get_report_type_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">{{ report.report_date|date:"M d, Y" }}</td>
+                            <td class="px-6 py-4">{{ report.lab_facility|default:'-' }}</td>
+                            <td class="px-6 py-4">{{ report.uploaded_by.get_full_name|default:report.uploaded_by.username }}
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end space-x-2">
+                                    {% if report.file %}
+                                    <a href="{% url 'DOC_DOWNLOAD_REPORT' patient.id report.id %}"
+                                        class="text-blue-600 hover:text-blue-800 transition-colors" title="Download">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-download-line"></i>
+                                        </div>
+                                    </a>
+                                    <a href="{% url 'DOC_VIEW_PATIENT_REPORT' patient.id report.id %}"
+                                        class="text-green-600 hover:text-green-800 transition-colors" title="View">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-eye-line"></i>
+                                        </div>
+                                    </a>
+                                    {% endif %}
+                                    {% if report.uploaded_by == request.user %}
+
+                                    <button onclick="openEditReportModal()"
+                                        class="text-yellow-600 hover:text-yellow-800 transition-colors open-edit-report-modal"
+                                        data-report-id="{{ report.id }}">
+                                        <div class="w-5 h-5 flex items-center justify-center">
+                                            <i class="ri-edit-line"></i>
+                                        </div>
+                                    </button>
+                                    <form method="post" action="{% url 'DOC_DELETE_PATIENT_REPORT' patient.id report.id %}" style="display:inline;"
+                                        class="delete-report-form">
+                                        {% csrf_token %}
+                                        <button type="button"
+                                            class="text-red-500 hover:text-red-700 open-delete-report-modal"
+                                            data-report-title="{{ report.title }}" data-report-id="{{ report.id }}"
+                                            title="Delete Report">
+                                            <div class="w-5 h-5 flex items-center justify-center">
+                                                <i class="ri-delete-bin-line"></i>
+                                            </div>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div
+                    class="flex flex-col items-center justify-center bg-blue-50 border border-blue-100 rounded-xl p-6 shadow-sm my-8 px-8">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="text-lg font-semibold text-blue-700 mb-1">No Reports Found</div>
+                    <div class="text-sm text-blue-500">This patient does not have any medical reports yet.</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+
+{% csrf_token %}
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden transition-opacity duration-200">
+    <div id="deleteModalBox"
+        class="bg-white rounded-2xl shadow-2xl p-0 w-full max-w-md border border-red-200 transform scale-95 opacity-0 transition-all duration-200">
+        <div class="flex items-center px-6 py-4 rounded-t-2xl bg-red-50 border-b border-red-100">
+            <div
+                class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-full bg-red-200 text-red-700 mr-4 shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" fill="#fee2e2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01" class="text-red-700"
+                        stroke="#b91c1c" stroke-width="2" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-red-700" id="deleteModalTitle">Delete Item</h3>
+                <p class="text-gray-700 mt-1 text-sm" id="deleteModalText">Are you sure you want to delete this item?
+                </p>
+            </div>
+        </div>
+        <div class="px-6 py-6 flex flex-col sm:flex-row justify-end gap-3 bg-white rounded-b-2xl">
+            <button type="button" id="cancelDeleteBtn"
+                class="px-5 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">Cancel</button>
+            <button type="button" id="confirmDeleteBtn"
+                class="px-5 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 font-semibold shadow-sm border border-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Report Modal -->
+<div id="addReportModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 max-h-[95vh] flex flex-col">
+        <!-- Modal Header -->
+        <div
+            class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mr-3">
+                    <i class="ri-file-add-line text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Add New Report</h2>
+                    <p class="text-sm text-gray-600">Upload medical report for {{ patient.full_name }}</p>
+                </div>
+            </div>
+            <button onclick="closeAddReportModal()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body with Scroll -->
+        <div class="p-6 overflow-y-auto flex-1">
+            <form method="post" action="{% url 'DOC_ADD_PATIENT_REPORT' patient.id %}" enctype="multipart/form-data"
+                id="createAppointmentForm" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    {% for field in report_form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                            <span class="text-red-500">*</span>
+                            {% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if report_form.description.errors %}
+                    <div class="mt-2 text-sm text-red-600">
+                        {% for error in report_form.description.errors %}
+                        <p class="flex items-center">
+                            <i class="ri-error-warning-line mr-1"></i>
+                            {{ error }}
+                        </p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeAddReportModal()"
+                        class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 flex items-center">
+                        <i class="ri-close-line mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 flex items-center">
+                        <i class="ri-add-line mr-2"></i>
+                        Add Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Report Modal -->
+<div id="editReportModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 max-h-[95vh] flex flex-col">
+        <!-- Modal Header -->
+        <div
+            class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                    <i class="ri-edit-line text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Edit Report</h2>
+                    <p class="text-sm text-gray-600">Update medical report for {{ patient.full_name }}</p>
+                </div>
+            </div>
+            <button onclick="closeEditReportModal()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body with Scroll -->
+        <div class="p-6 overflow-y-auto flex-1">
+            <form method="post" action="" id="editReportForm" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4" id="editFormFields">
+                    <!-- Django form fields will be populated here -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeEditReportModal()"
+                        class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 flex items-center">
+                        <i class="ri-close-line mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-200 flex items-center">
+                        <i class="ri-save-line mr-2"></i>
+                        Update Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add medicin Modal -->
+<div id="addMedModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 max-h-[95vh] flex flex-col">
+        <!-- Modal Header -->
+        <div
+            class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mr-3">
+                    <i class="ri-file-add-line text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Add New Medicine</h2>
+                    <p class="text-sm text-gray-600">for {{ patient.full_name }}</p>
+                </div>
+            </div>
+            <button onclick="closeAddMedModal()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body with Scroll -->
+        <div class="p-6 overflow-y-auto flex-1">
+            <form method="post" action="{% url 'ADD_MED' patient.id %}" id="addReportForm" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    {% for field in med_form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                            <span class="text-red-500">*</span>
+                            {% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeAddMedModal()"
+                        class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 flex items-center">
+                        <i class="ri-close-line mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 flex items-center">
+                        <i class="ri-add-line mr-2"></i>
+                        Add Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Medicine Modal -->
+<div id="editMedModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 max-h-[95vh] flex flex-col">
+        <!-- Modal Header -->
+        <div
+            class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                    <i class="ri-edit-line text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Edit Medicine</h2>
+                    <p class="text-sm text-gray-600">Update medicine for {{ patient.full_name }}</p>
+                </div>
+            </div>
+            <button onclick="closeEditMedModal()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+        <!-- Modal Body with Scroll -->
+        <div class="p-6 overflow-y-auto flex-1">
+            <form method="post" action="" id="editMedForm" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4" id="editMedFormFields">
+                    <!-- Django form fields will be populated here -->
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeEditMedModal()"
+                        class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 flex items-center">
+                        <i class="ri-close-line mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-200 flex items-center">
+                        <i class="ri-save-line mr-2"></i>
+                        Update Medicine
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Vitals Modal -->
+<div id="editVitalsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 max-h-[95vh] flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-t-2xl flex-shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                    <i class="ri-edit-line text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Edit Vitals</h2>
+                    <p class="text-sm text-gray-600">Update vitals for {{ patient.full_name }}</p>
+                </div>
+            </div>
+            <button onclick="closeEditVitalsModal()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+        <!-- Modal Body with Scroll -->
+        <div class="p-6 overflow-y-auto flex-1">
+            <form method="post" action="" id="editVitalsForm" class="space-y-4">
+                {% csrf_token %}
+                <div class="space-y-4" id="editVitalsFormFields">
+                    <!-- Django form fields will be populated here -->
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeEditVitalsModal()"
+                        class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200 flex items-center">
+                        <i class="ri-close-line mr-2"></i>
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-200 flex items-center">
+                        <i class="ri-save-line mr-2"></i>
+                        Update Vitals
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js_addon %}
+<!-- General Modal Handling JS -->
+<script>
+// Delete confirmation modal logic (shared by all sections)
+let formToDelete = null;
+let deleteUrl = null;
+const modal = document.getElementById('deleteModal');
+const modalBox = document.getElementById('deleteModalBox');
+const modalTitle = document.getElementById('deleteModalTitle');
+const modalText = document.getElementById('deleteModalText');
+
+// Delete Modal JS
+document.getElementById('cancelDeleteBtn').onclick = function () {
+    modalBox.classList.remove('scale-100', 'opacity-100');
+    modalBox.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        formToDelete = null;
+        deleteUrl = null;
+    }, 200);
+};
+document.getElementById('confirmDeleteBtn').onclick = function () {
+    if (formToDelete) {
+        formToDelete.submit();
+    }
+    modalBox.classList.remove('scale-100', 'opacity-100');
+    modalBox.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 200);
+};
+modal.addEventListener('click', function (e) {
+    if (e.target === this) {
+        modalBox.classList.remove('scale-100', 'opacity-100');
+        modalBox.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            formToDelete = null;
+            deleteUrl = null;
+        }, 200);
+    }
+});
+
+// Report JS Section
+function openAddReportModal() {
+    document.getElementById('addReportModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+function closeAddReportModal() {
+    document.getElementById('addReportModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+};
+document.querySelectorAll('.open-edit-report-modal').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const reportId = btn.getAttribute('data-report-id');
+
+        // Fetch the Django form data from the server
+        fetch(`/doctor/patient/{{ patient.id }}/reports/${reportId}/get-edit-form`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Set the form action URL
+                    document.getElementById('editReportForm').action = `/doctor/patient/{{ patient.id }}/reports/${reportId}/edit`;
+
+                    // Populate the form fields with Django form data
+                    populateEditReportForm(data.form_data);
+
+                    // Show the modal
+                    document.getElementById('editReportModal').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching form data:', error);
+                alert('Error loading form data');
+            });
+    });
+});
+function populateEditReportForm(formData) {
+    const formFieldsContainer = document.getElementById('editFormFields');
+    formFieldsContainer.innerHTML = ''; // Clear existing fields
+
+    // Create form fields based on Django form data
+    Object.keys(formData).forEach(fieldName => {
+        const fieldData = formData[fieldName];
+        const fieldDiv = document.createElement('div');
+
+        // Create label
+        const label = document.createElement('label');
+        label.className = 'block text-sm font-medium text-gray-700 mb-1';
+        label.htmlFor = `edit_${fieldName}`;
+        label.innerHTML = fieldData.label;
+        if (fieldData.required) {
+            label.innerHTML += ' <span class="text-red-500">*</span>';
+        }
+
+        // Create input field based on field type
+        let input;
+        if (fieldName === 'report_type') {
+            input = document.createElement('select');
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            if (fieldData.required) {
+                input.required = true;
+            }
+
+            // Add options
+            const options = [
+                { value: '', text: 'Select report type' },
+                { value: 'BLOOD_TEST', text: 'Blood Test' },
+                { value: 'X_RAY', text: 'X-Ray' },
+                { value: 'MRI', text: 'MRI' },
+                { value: 'CT_SCAN', text: 'CT Scan' },
+                { value: 'ULTRASOUND', text: 'Ultrasound' },
+                { value: 'ECG', text: 'ECG' },
+                { value: 'ECHO', text: 'Echocardiogram' },
+                { value: 'BIOPSY', text: 'Biopsy' },
+                { value: 'PATHOLOGY', text: 'Pathology' },
+                { value: 'OTHER', text: 'Other' }
+            ];
+
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.text;
+                if (option.value === fieldData.value) {
+                    optionElement.selected = true;
+                }
+                input.appendChild(optionElement);
+            });
+        } else if (fieldName === 'report_date') {
+            input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            input.value = fieldData.value;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        } else if (fieldName === 'file') {
+            input = document.createElement('input');
+            input.type = 'file';
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            input.accept = '.pdf,.jpg,.jpeg,.png,.doc,.docx';
+            if (fieldData.required) {
+                input.required = true;
+            }
+
+            // Add help text for file field
+            const helpText = document.createElement('p');
+            helpText.className = 'mt-1 text-xs text-gray-500';
+            helpText.textContent = 'Accepted formats: PDF, JPG, PNG, DOC, DOCX. Leave empty to keep the current file.';
+            fieldDiv.appendChild(helpText);
+        } else if (fieldName === 'description') {
+            input = document.createElement('textarea');
+            input.rows = 4;
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none';
+            input.placeholder = 'Enter additional description or notes about the report';
+            input.value = fieldData.value;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        } else {
+            input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            input.value = fieldData.value;
+            input.placeholder = fieldData.label;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        }
+
+        input.name = fieldName;
+        input.id = `edit_${fieldName}`;
+
+        // Append label and input to field div
+        fieldDiv.appendChild(label);
+        fieldDiv.appendChild(input);
+
+        // Append field div to container
+        formFieldsContainer.appendChild(fieldDiv);
+    });
+}
+function openEditReportModal() {
+    document.getElementById('editReportModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+function closeEditReportModal() {
+    document.getElementById('editReportModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+};
+document.querySelectorAll('.open-delete-report-modal').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        formToDelete = btn.closest('form');
+        const reportTitle = btn.getAttribute('data-report-title');
+        const reportId = btn.getAttribute('data-report-id');
+        modalTitle.textContent = 'Delete Report';
+        modalText.textContent = `Are you sure you want to delete the report "${reportTitle}"?`;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalBox.classList.remove('scale-95', 'opacity-0');
+            modalBox.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    });
+});
+
+// Medicine JS Section
+function openAddMedModal() {
+    document.getElementById('addMedModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+function closeAddMedModal() {
+    document.getElementById('addMedModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+};
+document.querySelectorAll('.open-edit-med-modal').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const medId = btn.getAttribute('data-med-id');
+
+        // Fetch the Django form data from the server
+        fetch(`/doctor/patient/{{ patient.id }}/medications/${medId}/get-edit-form`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Set the form action URL
+                    document.getElementById('editMedForm').action = `/doctor/medication/edit/${medId}/`;
+
+                    // Populate the form fields with Django form data
+                    populateEditMedForm(data.form_data);
+
+                    // Show the modal
+                    document.getElementById('editMedModal').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching form data:', error);
+                alert('Error loading form data');
+            });
+    });
+});
+function populateEditMedForm(formData) {
+    const formFieldsContainer = document.getElementById('editMedFormFields');
+    formFieldsContainer.innerHTML = ''; // Clear existing fields
+
+    // Create form fields based on Django form data
+    Object.keys(formData).forEach(fieldName => {
+        const fieldData = formData[fieldName];
+        const fieldDiv = document.createElement('div');
+
+        // Create label
+        const label = document.createElement('label');
+        label.className = 'block text-sm font-medium text-gray-700 mb-1';
+        label.htmlFor = `edit_med_${fieldName}`;
+        label.innerHTML = fieldData.label;
+        if (fieldData.required) {
+            label.innerHTML += ' <span class="text-red-500">*</span>';
+        }
+
+        // Create input field based on field type
+        let input;
+        if (fieldData.type === 'select') {
+            input = document.createElement('select');
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            if (fieldData.required) {
+                input.required = true;
+            }
+            // Add options
+            fieldData.choices.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.display;
+                if (option.value === fieldData.value) {
+                    optionElement.selected = true;
+                }
+                input.appendChild(optionElement);
+            });
+        } else if (fieldData.type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 4;
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none';
+            input.placeholder = fieldData.label;
+            input.value = fieldData.value;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        } else {
+            input = document.createElement('input');
+            input.type = fieldData.type || 'text';
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            input.value = fieldData.value;
+            input.placeholder = fieldData.label;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        }
+
+        input.name = fieldName;
+        input.id = `edit_med_${fieldName}`;
+
+        // Append label and input to field div
+        fieldDiv.appendChild(label);
+        fieldDiv.appendChild(input);
+
+        // Append field div to container
+        formFieldsContainer.appendChild(fieldDiv);
+    });
+}
+function openEditMedModal() {
+    document.getElementById('editMedModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+function closeEditMedModal() {
+    document.getElementById('editMedModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+};
+document.querySelectorAll('.open-delete-modal').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        formToDelete = btn.closest('form');
+        const medName = btn.getAttribute('data-med-name');
+        modalTitle.textContent = 'Delete Medication';
+        modalText.textContent = `Are you sure you want to delete the medication "${medName}"?`;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalBox.classList.remove('scale-95', 'opacity-0');
+            modalBox.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    });
+});
+
+// Vitals JS Section
+function openEditVitalsModal() {
+    fetch(`/doctor/patient/{{ patient.id }}/get-edit-vitals-form`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('editVitalsForm').action = `/doctor/patient/{{patient.id}}/edit-vitals/`;
+                populateEditVitalsForm(data.form_data);
+                document.getElementById('editVitalsModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching form data:', error);
+            alert('Error loading form data');
+        });
+}
+function closeEditVitalsModal() {
+    document.getElementById('editVitalsModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+function populateEditVitalsForm(formData) {
+    const formFieldsContainer = document.getElementById('editVitalsFormFields');
+    formFieldsContainer.innerHTML = '';
+    Object.keys(formData).forEach(fieldName => {
+        const fieldData = formData[fieldName];
+        const fieldDiv = document.createElement('div');
+        const label = document.createElement('label');
+        label.className = 'block text-sm font-medium text-gray-700 mb-1';
+        label.htmlFor = `edit_vitals_${fieldName}`;
+        label.innerHTML = fieldData.label;
+        if (fieldData.required) {
+            label.innerHTML += ' <span class="text-red-500">*</span>';
+        }
+        let input;
+        if (fieldData.type === 'textarea') {
+            input = document.createElement('textarea');
+            input.rows = 4;
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none';
+            input.placeholder = fieldData.label;
+            input.value = fieldData.value;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        } else {
+            input = document.createElement('input');
+            input.type = fieldData.type || 'number';
+            input.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+            input.value = fieldData.value;
+            input.placeholder = fieldData.label;
+            if (fieldData.required) {
+                input.required = true;
+            }
+        }
+        input.name = fieldName;
+        input.id = `edit_vitals_${fieldName}`;
+        fieldDiv.appendChild(label);
+        fieldDiv.appendChild(input);
+        formFieldsContainer.appendChild(fieldDiv);
+    });
+}
+
+// Dropdown/Accordion JS Section
+window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('medicationsChevron').style.transform = 'rotate(-90deg)';
+    document.getElementById('reportsChevron').style.transform = 'rotate(-90deg)';
+});
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const chevron = sectionId === 'medicationsSection' ? document.getElementById('medicationsChevron') : document.getElementById('reportsChevron');
+    if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    } else {
+        section.classList.add('hidden');
+        chevron.style.transform = 'rotate(-90deg)';
+    }
+}
+</script>
+{% endblock %}

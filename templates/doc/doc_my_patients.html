@@ -1,0 +1,69 @@
+{% extends "doc_base.html"%}
+
+{% block content %} <!-- Main Content -->
+<main class="flex-1 container mx-auto px-4 py-6">
+
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">My Patients</h1>
+        <p class="text-gray-600">Here is the list of your connected patients.</p>
+    </div>
+    <div class="mb-2 text-sm text-gray-600 flex items-center gap-1 pl-6">
+        <span>Found</span>
+        <span class="px-2 py-0.5 rounded bg-blue-100 text-primary font-semibold">{{ list.count }}</span>
+        <span>patient{{list.count|pluralize }}</span>
+        {% if search_query %}
+        <span class="ml-1 text-blue-500">matching your criteria</span>
+        {% endif %}
+    </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900">Patient List</h2>
+            <form method="get" class="flex items-center">
+                <input type="text" id="search" name="search" value="{{search_query}}" placeholder="Search patients..."
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-3 p-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                <button type="submit"
+                    class="ml-2 bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">Search</button>
+            </form>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Patient</th>
+                        <th scope="col" class="px-6 py-3">Age</th>
+                        <th scope="col" class="px-6 py-3">Blood Group</th>
+                        <th scope="col" class="px-6 py-3">Gender</th>
+                        <th scope="col" class="px-6 py-3">Phone Number</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in list %}
+                    <tr class="bg-white border-b hover:bg-gray-50 cursor-pointer" onclick="window.location='/doctor/patient/{{ item.patient.id }}/';">
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                    <img src="{{ item.patient.profile_image_url|default:'#' }}" alt="{{ item.patient.full_name }}"
+                                        class="w-full h-full object-cover" />
+                                </div>
+                                <span>{{ item.patient.full_name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">{{ item.patient.age|default:'-' }}</td>
+                        <td class="px-6 py-4">{{ item.patient.blood_type|default:'-' }}</td>
+                        <td class="px-6 py-4">{{ item.patient.user.gender|default:'-' }}</td>
+                        <td class="px-6 py-4">{{ item.patient.user.phone_number|default:'-' }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-400">No patients found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</div>
+{% endblock %}

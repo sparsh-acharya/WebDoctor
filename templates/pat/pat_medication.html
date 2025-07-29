@@ -1,0 +1,102 @@
+{% extends "pat_base.html" %}
+
+{% block content %}
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Page Header -->
+    <div class="mb-8 flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+            <i class="ri-medicine-bottle-line text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">My Medications</h1>
+            <p class="text-gray-600">A record of your prescribed medications.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Active Medications -->
+        <div>
+            <div class="flex items-center mb-4">
+                <i class="ri-capsule-line text-green-500 text-xl mr-2"></i>
+                <h2 class="text-xl font-semibold text-gray-900">Active Medications</h2>
+                <span class="ml-3 px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+            </div>
+            <div class="space-y-4">
+                {% for medication in active_medications %}
+                <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex items-start hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-5">
+                        <i class="ri-medicine-bottle-line text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ medication.name }}</h3>
+                            <span class="inline-block mt-2 md:mt-0 px-3 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-100">{{ medication.dosage }}mg</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                            <div class="flex items-center">
+                                <i class="ri-calendar-line mr-2 text-gray-400"></i>
+                                Prescribed: <span class="ml-1 font-medium text-gray-900">{{ medication.start_date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="ri-calendar-check-line mr-2 text-gray-400"></i>
+                                Ends: <span class="ml-1 font-medium text-gray-900">{{ medication.end_date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center col-span-2">
+                                <i class="ri-user-heart-line mr-2 text-gray-400"></i>
+                                Prescribing Doctor: <span class="ml-1 font-medium text-gray-900">{{ medication.doctor.full_name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-gray-50 rounded-xl p-6 text-center text-gray-500 border border-gray-100">
+                    You have no active medications.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Discontinued Medications -->
+        <div>
+            <div class="flex items-center mb-4">
+                <i class="ri-medicine-bottle-off-line text-gray-500 text-xl mr-2"></i>
+                <h2 class="text-xl font-semibold text-gray-900">Discontinued Medications</h2>
+                <span class="ml-3 px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-700">Discontinued</span>
+            </div>
+            <div class="space-y-4">
+                {% for medication in discontinued_medications %}
+                <div class="bg-white rounded-xl shadow border border-gray-100 p-6 flex items-start hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 mr-5">
+                        <i class="ri-medicine-bottle-off-line text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ medication.name }}</h3>
+                            <span class="inline-block mt-2 md:mt-0 px-3 py-1 text-xs font-medium rounded-full bg-gray-50 text-gray-700 border border-gray-200">{{ medication.dosage }}mg</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                            <div class="flex items-center">
+                                <i class="ri-calendar-line mr-2 text-gray-400"></i>
+                                Prescribed: <span class="ml-1 font-medium text-gray-900">{{ medication.start_date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="ri-calendar-check-line mr-2 text-gray-400"></i>
+                                Ends: <span class="ml-1 font-medium text-gray-900">{{ medication.end_date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center col-span-2">
+                                <i class="ri-user-heart-line mr-2 text-gray-400"></i>
+                                Prescribing Doctor: <span class="ml-1 font-medium text-gray-900">{{ medication.doctor.full_name }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-gray-50 rounded-xl p-6 text-center text-gray-500 border border-gray-100">
+                    You have no discontinued medications.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

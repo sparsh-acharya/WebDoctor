@@ -1,0 +1,160 @@
+{% extends "pat_base.html" %}
+
+{% block content %}
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Header -->
+    <div class="mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">{{ action }} Report</h1>
+                <p class="text-gray-600 mt-1">
+                    {% if action == 'Add' %}
+                        Upload a new medical report
+                    {% else %}
+                        Update report information
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'PAT_REPORTS' %}" class="text-primary hover:text-primary-dark transition-colors">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="ri-arrow-left-line"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.title.label }}
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.title.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Report Type and Date -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.report_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.report_type.label }}
+                        </label>
+                        {{ form.report_type }}
+                        {% if form.report_type.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.report_type.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.report_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ form.report_date.label }}
+                        </label>
+                        {{ form.report_date }}
+                        {% if form.report_date.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.report_date.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div>
+                    <label for="{{ form.file.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.file.label }}
+                    </label>
+                    {% if action == 'Edit' and report.file %}
+                    <div class="mb-3 p-3 bg-gray-50 rounded-md">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                                    <div class="w-4 h-4 flex items-center justify-center text-blue-600">
+                                        <i class="ri-file-line"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{ report.file.name|slice:"15:" }}</p>
+                                    <p class="text-xs text-gray-500">{{ report.file_size_mb }}MB • {{ report.file_extension }}</p>
+                                </div>
+                            </div>
+                            <a href="{% url 'PAT_DOWNLOAD_REPORT' report.id %}" class="text-blue-600 hover:text-blue-800 text-sm">
+                                Download
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-2">Upload a new file to replace the current one:</p>
+                    {% endif %}
+                    {{ form.file }}
+                    {% if form.file.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.file.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">Accepted formats: PDF, JPG, JPEG, PNG, DOC, DOCX (Max 10MB)</p>
+                </div>
+
+                <!-- Laboratory/Facility -->
+                <div>
+                    <label for="{{ form.lab_facility.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.lab_facility.label }}
+                    </label>
+                    {{ form.lab_facility }}
+                    {% if form.lab_facility.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.lab_facility.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.description.label }}
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="mt-1 text-sm text-red-600">
+                        {% for error in form.description.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                    <a href="{% url 'PAT_REPORTS' %}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark transition-colors">
+                        {% if action == 'Add' %}
+                            Upload Report
+                        {% else %}
+                            Update Report
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

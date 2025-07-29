@@ -1,0 +1,246 @@
+{% extends "doc_base.html" %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="flex-1 container mx-auto px-4 py-6">
+    <!-- Dashboard Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-gray-600">
+            Welcome back,{{request.user.DOC.full_name}}. You have {{todays_appointments.count}} appointment{{todays_appointments.count|pluralize}} today.
+        </p>
+    </div>
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">
+                    Today's Patients
+                </h3>
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-primary">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-user-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">8</p>
+            <p class="text-sm text-gray-500 mt-1">
+                <span class="text-green-500 font-medium">+2</span> from yesterday
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Pending Reports</h3>
+                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-file-list-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">5</p>
+            <p class="text-sm text-gray-500 mt-1">
+                <span class="text-red-500 font-medium">+3</span> from yesterday
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">New Messages</h3>
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-message-2-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">12</p>
+            <p class="text-sm text-gray-500 mt-1">
+                <span class="text-green-500 font-medium">-3</span> from yesterday
+            </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-gray-500 text-sm font-medium">Critical Alerts</h3>
+                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="ri-alert-line"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-gray-900">2</p>
+            <p class="text-sm text-gray-500 mt-1">
+                <span class="text-red-500 font-medium">+1</span> from yesterday
+            </p>
+        </div>
+    </div>
+    <!-- Main Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Column: Patient Overview -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Today's Appointments -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">
+                            Today's Appointments
+                        </h2>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">{{ now|date:'l, j F, Y' }}</p>
+                </div>
+                <div class="divide-y divide-gray-100">
+                    {% for appt in todays_appointments %}
+                    <div class="p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-2 h-10 bg-blue-500 rounded-full mr-4"></div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-gray-900">{{ appt.patient.full_name }}</h3>
+                                    <span class="text-sm text-gray-500">{{ appt.date_time|date:'h:i A' }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-500">{{ appt.hms_room_desc }}</p>
+                                    {% if appt.is_active %}
+                                    <a href="{{ appt.doc_meeting_link }}" target="_blank"
+                                        class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 text-sm font-normal rounded-lg hover:bg-green-200 transition-colors border border-green-200">
+                                        <i class="ri-video-line mr-2"></i>
+                                        Join Meeting
+                                    </a>
+                                    {% else %}
+                                    <span
+                                        class="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-400 text-sm font-normal rounded-lg border border-gray-200">
+                                        <i class="ri-video-off-line mr-2"></i>
+                                        Not started
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-gray-400">No appointments for today.</div>
+
+                    {% endfor %}
+                </div>
+                <div class="p-4 border-t border-gray-100">
+                    <a href="/doctor/appointments/"
+                        class="text-primary text-sm font-medium flex items-center justify-center">
+                        View all appointments
+                        <div class="w-4 h-4 flex items-center justify-center ml-1">
+                            <i class="ri-arrow-right-line"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Right Column: Quick Actions -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Quick Actions
+                    </h2>
+                </div>
+                <div class="grid grid-cols-2 gap-4 p-6">
+                    <button
+                        class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div
+                            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary mb-2">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-file-text-line"></i>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">New Prescription</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div
+                            class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 mb-2">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-message-2-line"></i>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Send Message</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div
+                            class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mb-2">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-test-tube-line"></i>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">Order Lab Test</span>
+                    </button>
+                    <button
+                        class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div
+                            class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500 mb-2">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-folder-chart-line"></i>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">View Reports</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Patient Information Section -->
+    <div class="mt-6">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">
+                        Patient Records
+                    </h2>
+                    <form method="get" class="flex items-center">
+                        <input type="text" id="search" name="search" value="{{search_query}}"
+                            placeholder="Search patients..."
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-3 p-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                        <button type="submit"
+                            class="ml-2 bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">Search</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Patient Table (No Tabs) -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">Patient</th>
+                            <th scope="col" class="px-6 py-3">Age</th>
+                            <th scope="col" class="px-6 py-3">Blood Group</th>
+                            <th scope="col" class="px-6 py-3">Gender</th>
+                            <th scope="col" class="px-6 py-3">Phone Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr class="bg-white border-b hover:bg-gray-50 cursor-pointer"
+                            onclick="window.location='/doctor/patient/{{patient.id }}/';">
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                        <img src="{{ item.patient.profile_image_url|default:'#' }}"
+                                            alt="{{ item.patient.full_name }}" class="w-full h-full object-cover" />
+                                    </div>
+                                    <span>{{ patient.full_name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">{{ patient.age|default:'-' }}</td>
+                            <td class="px-6 py-4">{{ patient.blood_type|default:'-' }}</td>
+                            <td class="px-6 py-4">{{ patient.user.gender|default:'-' }}</td>
+                            <td class="px-6 py-4">{{ patient.user.phone_number|default:'-' }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-400">No patients found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+{% endblock %}
